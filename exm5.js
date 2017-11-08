@@ -5,14 +5,12 @@ var firmata = require("firmata");
 
 var board = new firmata.Board("/dev/ttyACM0", function(){ // ACM Abstract Control Model for serial communication with Arduino (could be USB)console.log("Connecting to Arduino");
    console.log("Conecting to Arduino");
-   console.log("Activation of Pin 8");
+  // console.log("Activation of Pin 8");
    board.pinMode(8, board.MODES.OUTPUT); // Configures the specified pin to behave either as an input or an output.
     console.log("Activation of Pin 13");
-    board.pinMode(13, board.MODES.OUTPUT); // Configures the specified pin to behave either as an input or an output.
-    console.log("Activation of Pin 9");
-    board.pinMode(9, board.MODES.OUTPUT);
-    console.log("Activation of Pin 10");
-    board.pinMode(10, board.MODES.OUTPUT); 
+    console.log("Enabling Push Button on pin 2");
+ board.pinMode(2, board.MODES.INPUT);
+ 
     
 });
 function handler(reg,res){ 
@@ -26,33 +24,33 @@ function handler(reg,res){
         res.end(data);
     })
 } 
-http.listen(8080);
-io.sockets.on("connection", function(socket) {
-        socket.on("commandToArduino", function(commandNo){
-        if (commandNo == "0") {
-            board.digitalWrite(13, board.LOW); // write LOW on pin 13
-        }
-        if (commandNo == "1") {
-            board.digitalWrite(13, board.HIGH); // write HIGH on pin 13
-        }
-        if (commandNo == "2") {
-            board.digitalWrite(8, board.LOW); // write LOW on pin 8
-        }
-        if (commandNo == "3") {
-            board.digitalWrite(8, board.HIGH); // write HIGH on pin 8
-        } 
-        if (commandNo == "4") {
-            board.digitalWrite(9, board.LOW); // write LOW on pin 9
-        }
-          if (commandNo == "5") {
-            board.digitalWrite(9, board.HIGH); // write HIGH on pin 9
-        }
-          if (commandNo == "6") {
-            board.digitalWrite(10, board.LOW); // write HIGH on pin 10
-        }
-          if (commandNo == "7") {
-            board.digitalWrite(10, board.HIGH); // write HIGH on pin 10
+http.listen(8080)
+var sendValueViaSocket = function(){};
+board.on("ready", function(){
+    io.sockets.on("connection", function(socket){
+        console.log("Socket id:"+socket.id);
+        socket.emit("messageToClient", "Srv connected, board OK");
+        
+        sendValueViaSocket = function(value) {
+            io.sockets.emit("messageToClient", value);
         }
         
-    });
-});
+    });// end of sockets.on connection
+    
+    
+      board.digitalRead(2, function(value) {
+        if (value == 0) {
+            console.log("LED OFF");
+            board.digitalWrite(13, board.LOW);
+            sendValueViaSocket(0);
+        }
+        if (value == 1) {
+            console.log("LED ON");
+            board.digitalWrite(13, board.HIGH);
+            sendValueViaSocket(1);
+        }
+    });// end of board.digital read
+
+
+
+});// end of board.on ready
