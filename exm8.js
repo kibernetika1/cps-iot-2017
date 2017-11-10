@@ -14,7 +14,7 @@ var board = new firmata.Board("/dev/ttyACM0", function(){ // ACM Abstract Contro
     
 });
 function handler(reg,res){ 
-    fs.readFile(__dirname+"/button6.html",
+    fs.readFile(__dirname+"/button9.html",
     function(err, data){
         if(err){
             res.writeHead(500,{"Content-type":"text/plain"});
@@ -66,7 +66,7 @@ board.digitalRead(2, function(value) { // this happens many times on digital inp
         }
 
         last_sent = last_value;
-    }, 1000); // execute after 50ms
+    }, 50); // execute after 50ms
                 
     last_value = value; // this is read from pin 2 many times per s
                 
