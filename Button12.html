@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charcset = utf8>
+<html>
+<head>
+    <title>Example with HW buttons</title>
+</head>
+
+<body>
+ DC motor control with buttons
+<p></p>
+PWM: <input id="pwm" value=100 />    
+<button id="buttonSendPWM" onClick="sendPWM()">Send PWM</button>
+<button id="buttonLeft" onClick="left()">Left</button>
+<button id="buttonRight" onClick="right()">Right</button>
+<button id="buttonStop" onClick="stop()">STOP</button>   
+
+<!--canvas height='200' width='400' id='canvas1'>Обновите браузер</canvas!-->
+<div id="print1"> </div>
+
+
+
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+"use strict";// in odrer to use classes
+var numberOfLinesBeforeScroll = 10;
+var linesPrintCounter = 0;
+
+
+var divElement = document.getElementById("print1");
+//var ctx = divElement.getContext("2d");
+var socket = io.connect("172.16.22.105:8080"); //connect via socket
+function sendPWM () {
+var valuePWM = document.getElementById("pwm").value;
+    socket.emit("sendPWM", valuePWM);
+}
+
+function left () {
+    socket.emit("left", {"AIN1": 0, "AIN2": 1});
+}
+
+function right () {
+    socket.emit("right", {"AIN1": 1, "AIN2": 0});
+}
+
+function stop () {
+    socket.emit("stop", 0);
+}
+
+function log(msg) { 
+    divElement.innerHTML += '<div>' + msg + '</div>';
+  }
+ socket.on('messageToClient', function(msg) { // when we receive the message
+        log(msg); // we print it to div
+    });
+
+    socket.on('messageToClient', function(msg) { // when we receive the message
+        log(msg); // we print it to div
+    });
+
+    socket.on('disconnect', function() { // on disconnect
+        log("Disconnected from server"); // we print the status to div
+    
+    
+    });
+
+    
+</script>
+
+
+
+</body>
+
+
+</html>
