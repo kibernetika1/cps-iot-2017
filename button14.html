@@ -11,10 +11,12 @@
 <div>
 <canvas id="canvas1" width ="200" height = "100" style="border: 1px dashed #00c3c3;"></canvas>    
 </div>    
-    
-<div id="print1"></div>    
+ <button id="buttonStartControlAlgorithm" onClick="startControlAlgorithm()">Start Ctrl Alg</button>
+<button id="buttonStopControlAlgorithm" onClick="stopControlAlgorithm()">Stop Ctrl Alg</button>  
+<div id="print1"></div>  
 
 <br>
+
 
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     
@@ -34,6 +36,14 @@ var y2 = new Array(); // array for y2 variable
 var canvas1;
 var ctx1; 
 
+
+function startControlAlgorithm () {
+    socket.emit("startControlAlgorithm");
+}
+
+function stopControlAlgorithm () {
+    socket.emit("stopControlAlgorithm");
+}
     
 function log(msg) {
     var node=document.createElement("tr"); // we create the variable node as the a table row (tr)
@@ -104,8 +114,8 @@ socket.on("clientReadValues", function(value) {
     };
     ctx1.stroke(); // to draw the line
     // Draw second graph graph END ************************************    
-    
-    log(potValue1 + "|" + potValue2);
+    //console.log(value);
+    log(potValue1 + "|" + potValue2 + "|" + (potValue1 - potValue2) + "|" + (value.pwm).toFixed(0) ); // log to div
 });
 
 </script>
