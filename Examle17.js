@@ -7,7 +7,7 @@ var sendValueViaSocket = function() {}; // function to send message over socket
 var sendStaticMsgViaSocket = function() {}; // function to send static message over socket
 	 
 	  function handler(req, res) { // function with request and response, that is used in the first line of this example
-    fs.readFile(__dirname + "/button16.html",
+    fs.readFile(__dirname + "/example17.html",
 	      function (err, data){
 	          if (err) {
 	              res.writeHead(500, {"Content-Type": "text/plain"});
@@ -120,6 +120,7 @@ var sendStaticMsgViaSocket = function() {}; // function to send static message o
 	      "actualValue": actualValue,
       "pwm": pwm
     });
+    console.log(desiredValue);
 
   };
 
